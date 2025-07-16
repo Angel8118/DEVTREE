@@ -75,3 +75,12 @@ export const login = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
     res.json(req.user)
 }
+
+export const UpdateProfile = async (req: Request, res: Response) => {
+    try {
+        console.log(req.body)
+    } catch (e) {
+        const error = new Error("Error al actualizar el perfil")
+        return res.status(500).json({ message: error.message })
+    }
+}
