@@ -7,9 +7,9 @@ import { checkPassword, hashPassword } from "../utils/auth"
 import slug from "slug"
 import { generateJwt } from "../utils/jwt"
 
-export const createAccount = async (req : Request, res : Response) => {
+export const createAccount = async (req: Request, res: Response) => {
 
-    const { email, password} = req.body
+    const { email, password } = req.body
 
     // Validar si el usuario ya existe
     const userExists = await User.findOne({ email })
@@ -38,7 +38,7 @@ export const createAccount = async (req : Request, res : Response) => {
     await user.save()
 
     res.status(201).json({ message: "Usuario registrado con éxito" })
-}    
+}
 
 export const login = async (req: Request, res: Response) => {
     const errors = validationResult(req)
@@ -62,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Generar un JWT (JSON Web Token) para el usuario
-    const token = generateJwt({id: user._id, email: user.email})
+    const token = generateJwt({ id: user._id, email: user.email })
 
     // Si todo es correcto, enviar una respuesta de éxito
     res.status(200).json({
@@ -78,7 +78,21 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const UpdateProfile = async (req: Request, res: Response) => {
     try {
-        console.log(req.body)
+        const { description } = req.body
+
+        const handle = slug(req.body.handle, '')
+        const handleExists = await User.findOne({ handle })
+        if (handleExists && handleExists._id.toString() !== req.user._id.toString()) {
+            const error = new Error("El nombre de usuario ya está en uso")
+            return res.status(409).json({ message: error.message })
+        }
+
+        // Actualizar el perfil del usuario
+        req.user.description = description
+        req.user.handle = handle
+        await req.user.save()
+        res.status(200).json({ message: "Perfil actualizado con éxito" })
+
     } catch (e) {
         const error = new Error("Error al actualizar el perfil")
         return res.status(500).json({ message: error.message })
