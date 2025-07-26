@@ -5,7 +5,10 @@ import jwt from "jsonwebtoken"
 import { hash } from "bcrypt"
 import { checkPassword, hashPassword } from "../utils/auth"
 import slug from "slug"
+import formidable from "formidable"
+import {v4 as uuid} from 'uuid'
 import { generateJwt } from "../utils/jwt"
+import cloudinary from "../config/cloudinary"
 
 export const createAccount = async (req: Request, res: Response) => {
 
@@ -93,6 +96,30 @@ export const UpdateProfile = async (req: Request, res: Response) => {
         await req.user.save()
         res.status(200).json({ message: "Perfil actualizado con éxito" })
 
+    } catch (e) {
+        const error = new Error("Error al actualizar el perfil")
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+export const UploadImage = async (req: Request, res: Response) => {
+
+    try {
+        const form = formidable({ multiples: false })
+        form.parse(req, (error, fields, files) => {
+            cloudinary.uploader.upload(files.file[0].filepath, { public_id: uuid() }, async function (error, result) {
+                if (error) {
+                    const error = new Error("Hubo un error al subir la imagen")
+                    return res.status(500).json({ message: error.message })
+                }
+                if (result) {
+                    // Actualizar la imagen del usuario
+                    req.user.image = result.secure_url
+                    await req.user.save()
+                    return res.status(200).json({ image: result.secure_url })
+                }
+            })
+        })
     } catch (e) {
         const error = new Error("Error al actualizar el perfil")
         return res.status(500).json({ message: error.message })
