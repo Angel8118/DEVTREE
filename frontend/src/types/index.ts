@@ -1,7 +1,9 @@
 export type User = {
+    image: string | undefined
     handle: string
     name: string
     email: string
+    _id: string
     password: string
     description: string
 }
