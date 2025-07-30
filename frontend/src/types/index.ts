@@ -6,6 +6,7 @@ export type User = {
     _id: string
     password: string
     description: string
+    links: string // JSON stringified array of DevTreeLink
 }
 
 export type RegisterForm = Pick<User, 'handle' | 'email' | 'name'> & {

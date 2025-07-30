@@ -36,6 +36,7 @@ router.post("/auth/login",
 )
 
 router.get('/user', authenticate, getUser)
+
 router.patch('/user',
     body("handle")
         .notEmpty()

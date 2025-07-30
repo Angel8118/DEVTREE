@@ -4,6 +4,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import type { ProfileForm, User } from "../types"
 import { updateProfile, uploadImage } from "../api/DevTreeAPI"
 import { toast } from "sonner"
+import { use } from "react"
 
 export default function ProfileView() {
 
@@ -29,7 +30,7 @@ export default function ProfileView() {
     const uploadImageMutation = useMutation({
         mutationFn: uploadImage,
         onError: (error: Error) => {
-            toast.error(error.message)
+            toast.error(error.message) 
         },
         onSuccess: (data) => {
             queryClient.setQueryData(['user'], (prevData: User) => {
@@ -48,7 +49,10 @@ export default function ProfileView() {
     }
 
     const handleUserProfileForm = (formData: ProfileForm) => {
-        updateProfileMutation.mutate(formData)
+        const user : User = queryClient.getQueryData(['user'])!
+        user.description = formData.description
+        user.handle = formData.handle
+        updateProfileMutation.mutate(user)
     }
 
 
