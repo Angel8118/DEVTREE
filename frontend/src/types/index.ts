@@ -8,6 +8,7 @@ export type User = {
     description: string
     links: string // JSON stringified array of DevTreeLink
 }
+export type UserHandle = Pick<User, 'description' | 'handle' | 'image' | 'links' | 'name'>
 
 export type RegisterForm = Pick<User, 'handle' | 'email' | 'name'> & {
     password: string

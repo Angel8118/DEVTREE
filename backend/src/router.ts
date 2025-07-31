@@ -1,8 +1,9 @@
 import { Router } from "express"
 import { body } from "express-validator"
-import { createAccount, getUser, login, UpdateProfile, UploadImage } from "./handlers"
+import { createAccount, getUser, getUserByHandle, login, UpdateProfile, UploadImage } from "./handlers"
 import { handleInputErrors } from "./middleware/validation"
 import { authenticate } from "./middleware/auth"
+import { get } from "mongoose"
 const router = Router()
 
 // Authentication routes and registration
@@ -49,5 +50,7 @@ router.patch('/user',
     UpdateProfile)
 
 router.post('/user/image', authenticate, UploadImage)
+
+router.get('/:handle', getUserByHandle)
 
 export default router

@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios"
 import api from "../config/axios"
-import type { ProfileForm, User } from "../types"
+import type {  User, UserHandle } from "../types"
 
 export async function getUser() {
     try {
@@ -34,5 +34,17 @@ export async function uploadImage(file: File) {
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.error)
         }
+    }
+}
+
+export async function getUserByHandle(handle: string) {
+    try {
+        const {data} = await api<UserHandle>(`/${handle}`)
+        return data
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error || error.response.data.message || 'Usuario no encontrado')
+        }
+        throw new Error('Error de conexión')
     }
 }
