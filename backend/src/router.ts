@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { body } from "express-validator"
-import { createAccount, getUser, getUserByHandle, login, UpdateProfile, UploadImage } from "./handlers"
+import { createAccount, getUser, getUserByHandle, login, searchByHandle, UpdateProfile, UploadImage } from "./handlers"
 import { handleInputErrors } from "./middleware/validation"
 import { authenticate } from "./middleware/auth"
 import { get } from "mongoose"
@@ -42,9 +42,6 @@ router.patch('/user',
     body("handle")
         .notEmpty()
         .withMessage("El nombre de usuario (handle) es obligatorio"),
-    body("description")
-        .notEmpty()
-        .withMessage("La descripción es obligatoria"),
     handleInputErrors,
     authenticate,
     UpdateProfile)
@@ -52,5 +49,13 @@ router.patch('/user',
 router.post('/user/image', authenticate, UploadImage)
 
 router.get('/:handle', getUserByHandle)
+
+router.post('/search',
+    body("handle")
+        .notEmpty()
+        .withMessage("El nombre de usuario (handle) es obligatorio"),
+    handleInputErrors,
+    searchByHandle
+)
 
 export default router

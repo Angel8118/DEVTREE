@@ -6,7 +6,7 @@ import { hash } from "bcrypt"
 import { checkPassword, hashPassword } from "../utils/auth"
 import slug from "slug"
 import formidable from "formidable"
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { generateJwt } from "../utils/jwt"
 import cloudinary from "../config/cloudinary"
 
@@ -130,7 +130,7 @@ export const UploadImage = async (req: Request, res: Response) => {
 export const getUserByHandle = async (req: Request, res: Response) => {
     try {
         const { handle } = req.params
-        const user = await User.findOne({ handle }).select('-_id -password -email -__v') 
+        const user = await User.findOne({ handle }).select('-_id -password -email -__v')
         if (!user) {
             const error = new Error("Usuario no encontrado")
             return res.status(404).json({ error: error.message })
@@ -140,4 +140,20 @@ export const getUserByHandle = async (req: Request, res: Response) => {
         const error = new Error("Error al obtener el usuario")
         return res.status(500).json({ message: error.message })
     }
+}
+
+export const searchByHandle = async (req: Request, res: Response) => {
+    try {
+        const { handle } = req.body
+        const userExists = await User.findOne({ handle })
+        if (userExists) {
+            const error = new Error(`El nombre: "${handle}" ya está en uso`)
+            return res.status(409).json({ error: error.message })
+        }
+        res.send(`${handle} no está en uso, puedes registrarte con este nombre.`)
+    } catch (e) {
+        const error = new Error("Error al obtener el usuario")
+        return res.status(500).json({ message: error.message })
+    }
+
 }

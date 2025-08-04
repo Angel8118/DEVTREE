@@ -1,1 +1,7 @@
 @import "tailwindcss";
+.bg-home {
+  background-image: url('/bg.svg');
+}
+.bg-home-xl {
+  background-size: 50%;
+}

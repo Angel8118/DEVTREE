@@ -48,3 +48,15 @@ export async function getUserByHandle(handle: string) {
         throw new Error('Error de conexión')
     }
 }
+
+export async function searchByHandle(handle: string) {
+    try {
+        const {data} = await api.post<string>(`/search`, { handle })
+        return data
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error || error.response.data.message || 'Usuario no encontrado')
+        }
+        throw new Error('Error de conexión')
+    }
+}
