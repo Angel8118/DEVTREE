@@ -4,7 +4,6 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import type { ProfileForm, User } from "../types"
 import { updateProfile, uploadImage } from "../api/DevTreeAPI"
 import { toast } from "sonner"
-import { use } from "react"
 
 export default function ProfileView() {
 
